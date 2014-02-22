@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+	<!-- configuracion del datasource para HSQLDB, BASE DE PRUEBAS -->
+	<jdbc:embedded-database id="dataSource" type="HSQL">
+		<jdbc:script location="classpath:estructura-base.sql" />
+	</jdbc:embedded-database>
+
+	<context:component-scan base-package="org.upiita.spring" />
+
+	<!-- el packagesToScan de Hibernate es diferente de -->
+	<!-- la etiqueta context:component-scan -->
+	<!-- NOTE que para Hibernate 4 se usa la clase LocalSessionFactoryBean -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="packagesToScan" value="org.upiita.spring" />
+		<property name="hibernateProperties">
+			<map>
+				<entry key="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect" />
+				<!-- Para ver si se muestra la consulta creada en la consola -->
+				<entry key="hibernate.show_sql" value="true" />
+			</map>
+		</property>
+	</bean>
+</beans>
